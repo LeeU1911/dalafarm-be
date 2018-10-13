@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -56,18 +57,18 @@ public class OrderModelMapper {
     @Autowired
     private LocationService locationService;
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm");
-
     public Order toOrder(OrderModel orderModel) {
         Order order = new Order();
         order.setOrderDetail(toOrderDetail(orderModel));
         if (orderModel.getMeta() != null && orderModel.getMeta().getDate() != null) {
             try {
-                Date createdDate = dateFormat.parse(orderModel.getMeta().getDate());
+                String epochMilli = orderModel.getMeta().getDate();
+                Instant dateTime = Instant.ofEpochMilli(Long.parseLong(epochMilli));
+                Date createdDate = Date.from(dateTime);
                 order.setCreatedDate(createdDate);
                 order.setLastModifiedDate(createdDate);
-            } catch (ParseException e) {
-                log.error("Error converting date", e);
+            } catch (NumberFormatException nfe){
+                log.error("Cannot convert epoch in string to long", nfe);
             }
         }
         order.setOrderProducts(toOrderProducts(orderModel));
