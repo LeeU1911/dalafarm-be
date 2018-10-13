@@ -71,7 +71,7 @@
                     <!--<td th:text="${order.orderDetail.estimatedDeliverTime}"></td>-->
                     <!--<td th:text="${order.lastModifiedDate != null? displayDateFormatter.format(order.lastModifiedDate): ' '}"></td>-->
                     <td><a th:if="${order.orderDetail.statusId == 4}" target="_blank" th:href="@{/v1/order/{id}/activate(id=${order.id})}">Đăng GHTK</a>
-                        <br></br><br></br><div id="directShip" th:onclick="'javascript:updateStatusToShipped(\'' + ${order.orderDetail.orderId} + '\')'" th:if="${order.orderDetail.statusId == 4}">Giao Trực Tiếp</div>
+                        <br></br><br></br><a href="#"><div id="directShip" th:onclick="'javascript:updateStatusToShipped(\'' + ${order.orderDetail.orderId} + '\')'" th:if="${order.orderDetail.statusId == 4}">Giao Trực Tiếp</div></a>
                         <br></br><br></br><a th:if="${order.orderDetail.statusId == 5}" target="_blank" th:href="@{/v1/order/{id}/cancel(id=${order.id})}">Hủy đơn hàng</a>
                         <br></br><br></br><a target="_blank" th:href="@{/edit-order/{id}(id=${order.orderDetail.orderId})}">Sửa đơn hàng</a>
                     </td>
