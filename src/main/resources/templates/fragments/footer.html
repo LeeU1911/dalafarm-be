@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
 </head>
 <body>
@@ -42,7 +42,32 @@
                             },
                             { "mData": "orderDetail.note"},
                             { "mData": "status"},
-                            { "mData": "products"},
+                            {
+                                "mData": "products",
+                                "render": function (data, type, row) {
+                                    data.forEach(function (product) {
+                                        product.quantity = row.orderProducts.filter(function (p) {
+                                            return p.productId === product.id;
+                                        })[0].quantity;
+                                    });
+                                    var html = "";
+                                    html += "<table class=\"table table-striped\">\n" +
+                                        "                            <tbody>\n";
+                                    data.forEach(function (product) {
+                                        html += "                                <tr>\n" +
+                                            "                                    <td>" + product.name + "</td>\n" +
+                                            "                                    <td>\n" +
+                                            "                                          <span>" + product.quantity + "</span>\n" +
+                                            "                                    </td>\n" +
+                                            "                                </tr>\n";
+                                        html +=
+                                            "                            </tbody>\n" +
+                                            "                        </table>";
+                                    });
+                                    return html;
+                                }
+
+                            },
                             {
                                 "mData": "",
                                 "render": function (data, type, row) {
