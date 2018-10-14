@@ -10,6 +10,7 @@ import com.dalafarm.vendor.repository.OrderStatusRequestRepository;
 import com.dalafarm.vendor.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -38,22 +39,38 @@ public class OrderService {
     @Autowired
     private OrderModelMapper orderModelMapper;
 
-    public Iterable<OrderBackOfficeModel> getAllOrdersForFrontend(){
-        Iterable<Order> orders = orderRepository.findAll();
-        Iterable<Product> products = productRepository.findAll();
+    private Iterable<Product> allProducts = null;
+
+    public Iterable<OrderBackOfficeModel> getAllOrdersForFrontendWPaging(int page, int size) {
+        Iterable<Order> orders = orderRepository.findAll(new PageRequest(page, size));
+        return enrichOrderBackOfficeModels(orders);
+    }
+
+    public long countTotalOrders() {
+        return orderRepository.count();
+    }
+    private Iterable<OrderBackOfficeModel> enrichOrderBackOfficeModels(Iterable<Order> orders) {
+        if(allProducts == null){
+            allProducts = productRepository.findAll();
+        }
         return StreamSupport.stream(orders.spliterator(), false).map(o -> {
             List<OrderProduct> orderProductList = o.getOrderProducts();
             o.setProducts(orderProductList.stream().map(op -> {
-                        Product product = StreamSupport.stream(products.spliterator(), false)
-                                .filter(p -> op.getProductId().compareTo(p.getId()) == 0)
-                                .findFirst().orElse(null);
-                        return product;
-                    })
+                Product product = StreamSupport.stream(allProducts.spliterator(), false)
+                        .filter(p -> op.getProductId().compareTo(p.getId()) == 0)
+                        .findFirst().orElse(null);
+                return product;
+            })
                     .collect(Collectors.toList()));
             return o;
         })
                 .map(orderModelMapper::toOrderBackOfficeModel)
                 .collect(Collectors.toList());
+    }
+
+    public Iterable<OrderBackOfficeModel> getAllOrdersForFrontend(){
+        Iterable<Order> orders = orderRepository.findAll();
+        return enrichOrderBackOfficeModels(orders);
 
     }
 

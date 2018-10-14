@@ -18,7 +18,7 @@
 
     <div class="orders">
 
-        <table id="orderTable" class="table table-striped table-hover">
+        <!--<table id="orderTable" class="table table-striped table-hover">
             <thead>
                 <th>Ngày đặt</th>
                 <th>Mã đơn hàng</th>
@@ -26,15 +26,15 @@
                 <th>Tên khách hàng</th>
                 <th>Số điện thoại</th>
                 <th>Địa chỉ</th>
-                <!--<th>Quận Huyện</th>-->
-                <!--<th>Tỉnh Thành</th>-->
+                &lt;!&ndash;<th>Quận Huyện</th>&ndash;&gt;
+                &lt;!&ndash;<th>Tỉnh Thành</th>&ndash;&gt;
                 <th>Tổng tiền</th>
                 <th>Ghi chú</th>
                 <th>Trạng thái</th>
                 <th>Sản phẩm</th>
-                <!--<th>Dự kiến lấy hàng</th>-->
-                <!--<th>Dự kiến giao hàng</th>-->
-                <!--<th>Lần cuối cập nhật</th>-->
+                &lt;!&ndash;<th>Dự kiến lấy hàng</th>&ndash;&gt;
+                &lt;!&ndash;<th>Dự kiến giao hàng</th>&ndash;&gt;
+                &lt;!&ndash;<th>Lần cuối cập nhật</th>&ndash;&gt;
                 <th>Thao tác</th>
             </thead>
             <tbody>
@@ -45,8 +45,8 @@
                     <td th:text="${order.orderDetail.toPerson}"></td>
                     <td th:text="${order.orderDetail.dropTel}"></td>
                     <td th:text="${order.address}"></td>
-                    <!--<td th:text="${order.orderDetail.dropDistrictId}"></td>-->
-                    <!--<td th:text="${order.orderDetail.dropProvince}"></td>-->
+                    &lt;!&ndash;<td th:text="${order.orderDetail.dropDistrictId}"></td>&ndash;&gt;
+                    &lt;!&ndash;<td th:text="${order.orderDetail.dropProvince}"></td>&ndash;&gt;
                     <td th:text="${#numbers.formatDecimal(order.orderDetail.grandTotal, 0, 'COMMA', 0, 'POINT')}"></td>
                     <td th:text="${order.orderDetail.note}"></td>
                     <td th:text="${order.status}"></td>
@@ -62,14 +62,14 @@
                                           <span th:text="*{quantity}"></span>
                                         </span>
                                     </td>
-                                    <!--<td th:text="${order.orderProducts.?[productId.equals(product.id)]}"></td>-->
+                                    &lt;!&ndash;<td th:text="${order.orderProducts.?[productId.equals(product.id)]}"></td>&ndash;&gt;
                                 </tr>
                             </tbody>
                         </table>
                     </td>
-                    <!--<td th:text="${order.orderDetail.estimatedPickupTime}"></td>-->
-                    <!--<td th:text="${order.orderDetail.estimatedDeliverTime}"></td>-->
-                    <!--<td th:text="${order.lastModifiedDate != null? displayDateFormatter.format(order.lastModifiedDate): ' '}"></td>-->
+                    &lt;!&ndash;<td th:text="${order.orderDetail.estimatedPickupTime}"></td>&ndash;&gt;
+                    &lt;!&ndash;<td th:text="${order.orderDetail.estimatedDeliverTime}"></td>&ndash;&gt;
+                    &lt;!&ndash;<td th:text="${order.lastModifiedDate != null? displayDateFormatter.format(order.lastModifiedDate): ' '}"></td>&ndash;&gt;
                     <td><a th:if="${order.orderDetail.statusId == 4}" target="_blank" th:href="@{/v1/order/{id}/activate(id=${order.id})}">Đăng GHTK</a>
                         <br></br><br></br><a href="#"><div id="directShip" th:onclick="'javascript:updateStatusToShipped(\'' + ${order.orderDetail.orderId} + '\')'" th:if="${order.orderDetail.statusId == 4}">Giao Trực Tiếp</div></a>
                         <br></br><br></br><a th:if="${order.orderDetail.statusId == 5}" target="_blank" th:href="@{/v1/order/{id}/cancel(id=${order.id})}">Hủy đơn hàng</a>
@@ -77,6 +77,25 @@
                     </td>
                 </tr>
             </tbody>
+        </table>-->
+
+        <table id="orderTable">
+            <thead>
+                <tr>
+                    <th>Ngày đặt</th>
+                    <th>Mã đơn</th>
+                    <th>Mã đơn hàng GHTK</th>
+                    <th>Tên khách hàng</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Tổng tiền</th>
+                    <th>Ghi chú</th>
+                    <th>Trạng thái</th>
+                    <th>Sản phẩm</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
         </table>
     </div>
 

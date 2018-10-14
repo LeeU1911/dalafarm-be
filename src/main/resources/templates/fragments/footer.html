@@ -21,12 +21,44 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script type="text/javascript"
             src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-            <script type="text/javascript">
+            <script th:inline="javascript">
+                //<![CDATA[
                 $(document).ready(function(){
                     $('#orderTable').DataTable({
-                        "order": [[ 0, "desc" ]]
+                        "order": [[ 0, "desc" ]],
+                        "processing": true,
+                        "serverSide": true,
+                        "ajax": "/pagedOrders",
+                        "aoColumns": [
+                            { "mData": "createdDate"},
+                            { "mData": "orderDetail.orderId"},
+                            { "mData": "orderDetail.vendorOrderId"},
+                            { "mData": "orderDetail.toPerson"},
+                            { "mData": "orderDetail.dropTel"},
+                            { "mData": "address"},
+                            {
+                                "mData": "orderDetail.grandTotal",
+                                "render": $.fn.dataTable.render.number( ',', '.', 0, '', 'đ')
+                            },
+                            { "mData": "orderDetail.note"},
+                            { "mData": "status"},
+                            { "mData": "products"},
+                            {
+                                "mData": "",
+                                "render": function (data, type, row) {
+                                    var html = "";
+                                    if(row.orderDetail.statusId === 4){
+                                        html += "<a href='/v1/order/" + row.id + "/activate'><button>Đăng GHTK</button></a>";
+                                        html += "<a href='#'><button style='margin-top: 10px;' onclick='updateStatusToShipped(\"" + row.orderDetail.orderId + "\")'>Giao Trực Tiếp</button></a>";
+                                    }
+                                    return html;
+                                }
+                            }
+
+                        ]
                     });
                 });
+                //]]>
             </script>
         </footer>
     </div>

@@ -1,13 +1,18 @@
 package com.dalafarm.vendor.controller.frontend;
 
+import com.dalafarm.vendor.model.frontend.OrderBackOfficeModel;
+import com.dalafarm.vendor.model.frontend.PagedOrder;
 import com.dalafarm.vendor.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.TimeZone;
 
 /**
@@ -34,6 +39,17 @@ public class FrontendController {
         model.addAttribute("orders", orderService.getAllOrdersForFrontend());
         addDateFormatter(model);
         return "orders";
+    }
+
+    @GetMapping("/pagedOrders")
+    @ResponseBody
+    public PagedOrder pagedOrders(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) {
+        Iterable<OrderBackOfficeModel> pagedOrders = Collections.EMPTY_LIST;
+        if (start != null && length != null) {
+            int page = start/length;
+            pagedOrders = orderService.getAllOrdersForFrontendWPaging(page, length);
+        }
+        return new PagedOrder(draw, start, length, orderService.countTotalOrders(), orderService.countTotalOrders(), pagedOrders);
     }
 
     private void addDateFormatter(Model model) {
