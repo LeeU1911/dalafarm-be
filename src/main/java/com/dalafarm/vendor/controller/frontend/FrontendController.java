@@ -36,8 +36,6 @@ public class FrontendController {
 
     @GetMapping("/orders")
     public String admin(Model model) {
-        model.addAttribute("orders", orderService.getAllOrdersForFrontend());
-        addDateFormatter(model);
         return "orders";
     }
 
