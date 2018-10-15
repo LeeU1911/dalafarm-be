@@ -35,7 +35,7 @@ public class FrontendController {
     }
 
     @GetMapping("/orders")
-    public String admin(Model model) {
+    public String admin() {
         return "orders";
     }
 
