@@ -54,7 +54,6 @@ public class FrontendController {
         if(paramsMap != null){
             String searchValue = paramsMap.get("search[value]");
             if (!searchValue.isEmpty()) {
-                System.out.println(searchValue);
                 pagedOrders = orderService.searchOrdersForFrontendWPagingSortingCreatedDateDesc(searchValue);
                 return new PagedOrder(draw, start, length, orderService.countTotalOrders(), pagedOrders.spliterator().getExactSizeIfKnown(), pagedOrders);
             }
