@@ -42,8 +42,16 @@ public class OrderService {
 
     private Iterable<Product> allProducts = null;
 
-    public Iterable<OrderBackOfficeModel> getAllOrdersForFrontendWPaging(int page, int size) {
-        Iterable<Order> orders = orderRepository.findAll(new PageRequest(page, size, Sort.Direction.DESC, "createdDate"));
+    public Iterable<OrderBackOfficeModel> searchOrdersForFrontendWPagingSortingCreatedDateDesc(String searchValue) {
+        return enrichOrderBackOfficeModels(orderRepository.findByOrderDetailToPersonIgnoreCaseContainingOrOrderDetailDropAddressIgnoreCaseContainingOrOrderDetailDropTelContainingOrOrderDetailOrderIdIgnoreCaseContaining(searchValue, searchValue, searchValue, searchValue));
+    }
+
+    public Iterable<OrderBackOfficeModel> getAllOrdersForFrontendWPagingSortingCreatedDateDesc(int page, int size) {
+        return getAllOrdersForFrontendWPagingWSort(page, size, Sort.Direction.DESC, "createdDate");
+    }
+
+    public Iterable<OrderBackOfficeModel> getAllOrdersForFrontendWPagingWSort(int page, int size, Sort.Direction direction, String... properties) {
+        Iterable<Order> orders = orderRepository.findAll(new PageRequest(page, size, direction, properties));
         return enrichOrderBackOfficeModels(orders);
     }
 

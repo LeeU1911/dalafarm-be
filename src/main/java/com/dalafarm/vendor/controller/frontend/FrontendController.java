@@ -3,6 +3,7 @@ package com.dalafarm.vendor.controller.frontend;
 import com.dalafarm.vendor.model.frontend.OrderBackOfficeModel;
 import com.dalafarm.vendor.model.frontend.PagedOrder;
 import com.dalafarm.vendor.service.OrderService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -41,11 +43,21 @@ public class FrontendController {
 
     @GetMapping("/pagedOrders")
     @ResponseBody
-    public PagedOrder pagedOrders(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) {
+    public PagedOrder pagedOrders(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length
+                                    , @RequestParam(required = false) Map<String, String> paramsMap
+                                  ) {
         Iterable<OrderBackOfficeModel> pagedOrders = Collections.EMPTY_LIST;
         if (start != null && length != null) {
             int page = start/length;
-            pagedOrders = orderService.getAllOrdersForFrontendWPaging(page, length);
+            pagedOrders = orderService.getAllOrdersForFrontendWPagingSortingCreatedDateDesc(page, length);
+        }
+        if(paramsMap != null){
+            String searchValue = paramsMap.get("search[value]");
+            if (!searchValue.isEmpty()) {
+                System.out.println(searchValue);
+                pagedOrders = orderService.searchOrdersForFrontendWPagingSortingCreatedDateDesc(searchValue);
+                return new PagedOrder(draw, start, length, orderService.countTotalOrders(), pagedOrders.spliterator().getExactSizeIfKnown(), pagedOrders);
+            }
         }
         return new PagedOrder(draw, start, length, orderService.countTotalOrders(), orderService.countTotalOrders(), pagedOrders);
     }
@@ -71,5 +83,11 @@ public class FrontendController {
     @GetMapping("/403")
     public String error403() {
         return "403";
+    }
+
+    @Data
+    private class SearchParams {
+        String value;
+        boolean regex;
     }
 }
